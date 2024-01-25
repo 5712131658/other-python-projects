@@ -1,0 +1,235 @@
+import tensorflow
+import numpy
+import matplotlib.pyplot
+from sklearn.metrics import confusion_matrix,accuracy_score,f1_score,classification_report
+import cv2
+from glob import glob
+import os
+import matplotlib.image
+from tensorflow import keras
+from tensorflow.keras.models import Sequential, Model
+import matplotlib.image
+import random
+tests = './test/test stop'
+test = './test'
+valis = './vali/validat stop'
+valiu = './vali/validat uturn'
+vali = './vali'
+train = './train'
+trains = './train/train stop'
+trainu = './train/train uturn'
+Valis = glob(f'{valis}/*jp*g')
+Valiu = glob(f'{valiu}/*jp*g')
+Trains = glob(f'{trains}/*jp*g')
+Trainu = glob(f'{trainu}/*jp*g')
+testu = './test/test uturn'
+Testu = glob(f'{testu}/*jp*g')
+Tests = glob(f'{tests}/*jp*g')
+file = random.choice(os.listdir(trainu))
+image_path= os.path.join(trainu, file)
+img=matplotlib.image.imread(image_path)
+matplotlib.pyplot.title(file)
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.imshow(img)
+matplotlib.pyplot.show()
+file1 = random.choice(os.listdir(trains))
+image_path1= os.path.join(trains, file1)
+img1=matplotlib.image.imread(image_path1)
+matplotlib.pyplot.title(file1)
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.imshow(img1)
+matplotlib.pyplot.show()
+file2 = random.choice(os.listdir(valiu))
+image_path2= os.path.join(valiu, file2)
+img2=matplotlib.image.imread(image_path2)
+matplotlib.pyplot.title(file2)
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.imshow(img2)
+matplotlib.pyplot.show()
+file3 = random.choice(os.listdir(valis))
+image_path3= os.path.join(valis, file3)
+img3=matplotlib.image.imread(image_path3)
+matplotlib.pyplot.title(file3)
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.imshow(img3)
+matplotlib.pyplot.show()
+file4 = random.choice(os.listdir(testu))
+image_path4= os.path.join(testu, file4)
+img4=matplotlib.image.imread(image_path4)
+matplotlib.pyplot.title(file4)
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.imshow(img4)
+matplotlib.pyplot.show()
+file5 = random.choice(os.listdir(tests))
+image_path5= os.path.join(tests, file5)
+img5=matplotlib.image.imread(image_path5)
+matplotlib.pyplot.title(file5)
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.imshow(img5)
+matplotlib.pyplot.show()
+imgsize = [100,100]
+matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(100):
+    file = random.choice(os.listdir(trains))
+    image_path= os.path.join(trains, file)
+    img=matplotlib.image.imread(image_path)
+    ax=matplotlib.pyplot.subplot(10,10,i+1)
+    ax.title.set_text(file)
+    ax.axis('off')
+    matplotlib.pyplot.imshow(img)
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(100):
+    file = random.choice(os.listdir(trainu))
+    image_path= os.path.join(trainu, file)
+    img=matplotlib.image.imread(image_path)
+    ax=matplotlib.pyplot.subplot(10,10,i+1)
+    ax.title.set_text(file)
+    ax.axis('off')
+    matplotlib.pyplot.imshow(img)
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(18):
+    file = random.choice(os.listdir(tests))
+    image_path= os.path.join(tests, file)
+    img=matplotlib.image.imread(image_path)
+    ax=matplotlib.pyplot.subplot(3,6,i+1)
+    ax.title.set_text(file)
+    ax.axis('off')
+    matplotlib.pyplot.imshow(img)
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(18):
+    file = random.choice(os.listdir(testu))
+    image_path= os.path.join(testu, file)
+    img=matplotlib.image.imread(image_path)
+    ax=matplotlib.pyplot.subplot(3,6,i+1)
+    ax.title.set_text(file)
+    ax.axis('off')
+    matplotlib.pyplot.imshow(img)
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(20):
+    file = random.choice(os.listdir(valis))
+    image_path= os.path.join(valis, file)
+    img=matplotlib.image.imread(image_path)
+    ax=matplotlib.pyplot.subplot(5,4,i+1)
+    ax.title.set_text(file)
+    ax.axis('off')
+    matplotlib.pyplot.imshow(img)
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(20):
+    file = random.choice(os.listdir(valiu))
+    image_path= os.path.join(valiu, file)
+    img=matplotlib.image.imread(image_path)
+    ax=matplotlib.pyplot.subplot(4,5,i+1)
+    ax.title.set_text(file)
+    ax.axis('off')
+    matplotlib.pyplot.imshow(img)
+  tr = glob(os.path.join(train,'*','*.jp*g'))
+tt = glob(os.path.join(test,'*','*.jp*g'))
+v = glob(os.path.join(vali,'*','*.jp*g'))
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(len(tr)):
+    img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(tr[i]),data_format=None,scale=True)
+    matplotlib.pyplot.subplot(20,10, i + 1)
+    matplotlib.pyplot.grid(False)
+    matplotlib.pyplot.axis('off')
+    matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(tr[i]),cv2.COLOR_BGR2RGB))
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(len(v)):
+    img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(v[i]),data_format=None,scale=True)
+    matplotlib.pyplot.subplot(5,8, i + 1)
+    matplotlib.pyplot.grid(False)
+    matplotlib.pyplot.axis('off')
+    matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(v[i]),cv2.COLOR_BGR2RGB))
+  matplotlib.pyplot.figure(figsize=(30,30))
+for i in range(len(tt)):
+    img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(tt[i]),data_format=None,scale=True)
+    matplotlib.pyplot.subplot(6,6, i + 1)
+    matplotlib.pyplot.grid(False)
+    matplotlib.pyplot.axis('off')
+    matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(tt[i]),cv2.COLOR_BGR2RGB))
+  vgg3 = tensorflow.keras.applications.vgg19.VGG19(input_shape = imgsize + [3],weights = 'imagenet',include_top = False)
+for each_layer in vgg3.layers:
+    each_layer.trainable = False
+X6 = tensorflow.keras.layers.Conv2D(32, (3, 3), strides = 2, activation = 'relu', padding = 'same')(vgg3.output)
+X6 = tensorflow.keras.layers.Conv2D(64, (3, 3), strides = 2, activation = 'relu', padding = 'same')(X6)
+X6 = tensorflow.keras.layers.Conv2D(128, (3, 3), strides = 2, activation = 'relu', padding = 'same')(X6)
+X6 = tensorflow.keras.layers.MaxPooling2D((2, 2), padding='same')(X6)
+X6 = tensorflow.keras.layers.Flatten()(X6)
+y_pred6 = tensorflow.keras.layers.Dense(2,activation = 'sigmoid')(X6)
+model6 = tensorflow.keras.models.Model(inputs = vgg3.input,outputs = y_pred6)
+model6.summary()
+model6.compile(loss = 'sparse_categorical_crossentropy',optimizer = 'adam',metrics = ['accuracy'])
+  resnet3 = tensorflow.keras.applications.resnet.ResNet50(input_shape = imgsize + [3],weights = 'imagenet',include_top = False)
+for each_layer in resnet3.layers:
+    each_layer.trainable = False
+X7 = tensorflow.keras.layers.Conv2D(32, (3, 3), strides = 2, activation = 'relu', padding = 'same')(resnet3.output)
+X7 = tensorflow.keras.layers.Conv2D(64, (3, 3), strides = 2, activation = 'relu', padding = 'same')(X7)
+X7 = tensorflow.keras.layers.Conv2D(128, (3, 3), strides = 2, activation = 'relu', padding = 'same')(X7)
+X7 = tensorflow.keras.layers.MaxPooling2D((2, 2), padding='same')(X7)
+X7 = tensorflow.keras.layers.Flatten()(X7)
+y_pred7 = tensorflow.keras.layers.Dense(2,activation = 'sigmoid')(X7)
+model7 = tensorflow.keras.models.Model(inputs = resnet3.input,outputs = y_pred7)
+model7.summary()
+model7.compile(loss = 'sparse_categorical_crossentropy',optimizer = 'adam',metrics = ['accuracy'])
+generator = tensorflow.keras.preprocessing.image.ImageDataGenerator(rotation_range = 20,width_shift_range = 0.1,height_shift_range = 0.1,shear_range = 0.1,zoom_range = 0.2,horizontal_flip = True,vertical_flip = True,preprocessing_function = tensorflow.keras.applications.resnet.preprocess_input)
+training_generator = generator.flow_from_directory(directory = train,target_size = imgsize,shuffle = True,batch_size = 10,class_mode = 'sparse')
+validation_generator = generator.flow_from_directory(directory = vali,target_size = imgsize,shuffle = True,batch_size = 5,class_mode = 'sparse')
+  matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.plot(historyvgg3.history['loss'], label = 'loss')
+matplotlib.pyplot.plot(historyvgg3.history['val_loss'], label = 'val_loss')
+matplotlib.pyplot.legend()
+  matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.plot(historyresnet3.history['loss'], label = 'loss')
+matplotlib.pyplot.plot(historyresnet3.history['val_loss'], label = 'val_loss')
+matplotlib.pyplot.legend()
+  matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.plot(historyvgg3.history["accuracy"], label="train_accuracy")
+matplotlib.pyplot.plot(historyvgg3.history["val_accuracy"], label="val_accuracy")
+matplotlib.pyplot.legend()
+matplotlib.pyplot.show()
+  matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.plot(historyresnet3.history["accuracy"], label="train_accuracy")
+matplotlib.pyplot.plot(historyresnet3.history["val_accuracy"], label="val_accuracy")
+matplotlib.pyplot.legend()
+matplotlib.pyplot.show()
+  ypred3 = []
+y_true3 = []
+each_index3 = 0
+test_generator3 = generator.flow_from_directory(directory = test,target_size = imgsize,shuffle = True,batch_size = 5 * 10)
+for each_X3, each_y3 in test_generator3:
+    each_index3 += 1
+    each_y_pred3 = model3.predict(each_X3)
+    each_y_pred3 = numpy.argmax(each_y_pred3, axis = 1)
+    each_y_true3 = numpy.argmax(each_y3, axis = 1)
+    ypred3 = numpy.concatenate((ypred3, each_y_pred3))
+    y_true3 = numpy.concatenate((y_true3, each_y_true3))
+    if len(y_true3) >= len(tt):
+        break
+  ypred7 = []
+y_true7 = []
+each_index7 = 0
+test_generator7 = generator.flow_from_directory(directory = test,target_size = imgsize,shuffle = True,batch_size = 5 * 10)
+for each_X7,each_y7 in test_generator7:
+    each_index7 += 1
+    each_y_pred7 = model7.predict(each_X7)
+    each_y_pred7 = numpy.argmax(each_y_pred7,axis = 1)
+    each_y_true7 = numpy.argmax(each_y7,axis = 1)
+    ypred7 = numpy.concatenate((ypred7,each_y_pred7))
+    y_true7 = numpy.concatenate((y_true7, each_y_true7))
+    if len(y_true7) >= len(tt):
+        break
+  accuracy3 = accuracy_score(y_true = y_true3, y_pred = ypred3)
+print('accuracy :',accuracy3)
+f13 = f1_score(y_true = y_true3, y_pred = ypred3)
+print('f1 :',f13)
+cm3 = confusion_matrix(y_true = y_true3, y_pred = ypred3)
+print('confusion matrix')
+print(cm3)
+print(classification_report(y_true = y_true3,y_pred = ypred3))
+accuracy7 = accuracy_score(y_true = y_true7,y_pred = ypred7)
+print('accuracy :',accuracy7)
+f17 = f1_score(y_true = y_true7,y_pred = ypred7)
+print('f1 :',f17)
+cm7 = confusion_matrix(y_true = y_true7,y_pred = ypred7)
+print('confusion matrix')
+print(cm7)
+print(classification_report(y_true = y_true7,y_pred = ypred7))
