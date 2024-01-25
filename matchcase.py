@@ -1,11 +1,11 @@
-import pandas as pd
+import pandas
 class VisitorsAnalyticsUtils:
     def __init__ (self,):
         pass
     def loadDataFile (self):
-        pd.set_option('display.max_columns', None)
-        df = pd.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
-        dfn = pd.read_csv("Int_Monthly_Visitor (1).csv",thousands= ',',na_values=" na ")
+        pandas.set_option('display.max_columns', None)
+        df = pandas.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
+        dfn = pandas.read_csv("Int_Monthly_Visitor (1).csv",thousands= ',',na_values=" na ")
         df = df.fillna(value=0)
         year_series =  df["   "]
         year_series = year_series.str.strip()
@@ -115,7 +115,7 @@ class VisitorsAnalyticsUtils:
                     print(othersy.iloc[360:481].info())
                     print("*** Parsed Data (Years) ***")
                     print(years.iloc[360:481].describe())
-df = pd.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
+df = pandas.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
 df = df.fillna(value=0)
 year_series =  df["   "]
 year_series = year_series.str.strip()
