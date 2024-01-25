@@ -1,12 +1,12 @@
-import pandas as pd
-df = pd.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
+import pandas
+df = pandas.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
 df = df.fillna(value=0)
 class VisitorsAnalyticsUtils:
     def __init__ (self,):
         pass
     def loadDataFile (self):
-        pd.set_option('display.max_columns', None)
-        df = pd.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
+        pandas.set_option('display.max_columns', None)
+        df = pandas.read_csv("Int_Monthly_Visitor (1).csv", thousands=',', na_values=' na ')
         df = df.fillna(value=0)
         print(df[:5])
         return df
