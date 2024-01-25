@@ -1,3 +1,4 @@
+#import packages
 import tensorflow
 import numpy
 import matplotlib.pyplot
@@ -10,6 +11,7 @@ from tensorflow import keras
 from tensorflow.keras.models import Sequential, Model
 import matplotlib.image
 import random
+#load images from folder and randomly display image with file name
 tests = './test/test stop'
 test = './test'
 valis = './vali/validat stop'
@@ -67,7 +69,9 @@ matplotlib.pyplot.title(file5)
 matplotlib.pyplot.axis('off')
 matplotlib.pyplot.imshow(img5)
 matplotlib.pyplot.show()
+#resize image for model to use
 imgsize = [100,100]
+#display images with file name in a orderly manner
 matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(100):
     file = random.choice(os.listdir(trains))
@@ -77,7 +81,7 @@ for i in range(100):
     ax.title.set_text(file)
     ax.axis('off')
     matplotlib.pyplot.imshow(img)
-  matplotlib.pyplot.figure(figsize=(30,30))
+matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(100):
     file = random.choice(os.listdir(trainu))
     image_path= os.path.join(trainu, file)
@@ -86,7 +90,7 @@ for i in range(100):
     ax.title.set_text(file)
     ax.axis('off')
     matplotlib.pyplot.imshow(img)
-  matplotlib.pyplot.figure(figsize=(30,30))
+matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(18):
     file = random.choice(os.listdir(tests))
     image_path= os.path.join(tests, file)
@@ -95,7 +99,7 @@ for i in range(18):
     ax.title.set_text(file)
     ax.axis('off')
     matplotlib.pyplot.imshow(img)
-  matplotlib.pyplot.figure(figsize=(30,30))
+matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(18):
     file = random.choice(os.listdir(testu))
     image_path= os.path.join(testu, file)
@@ -104,7 +108,7 @@ for i in range(18):
     ax.title.set_text(file)
     ax.axis('off')
     matplotlib.pyplot.imshow(img)
-  matplotlib.pyplot.figure(figsize=(30,30))
+matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(20):
     file = random.choice(os.listdir(valis))
     image_path= os.path.join(valis, file)
@@ -113,7 +117,7 @@ for i in range(20):
     ax.title.set_text(file)
     ax.axis('off')
     matplotlib.pyplot.imshow(img)
-  matplotlib.pyplot.figure(figsize=(30,30))
+matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(20):
     file = random.choice(os.listdir(valiu))
     image_path= os.path.join(valiu, file)
@@ -122,10 +126,12 @@ for i in range(20):
     ax.title.set_text(file)
     ax.axis('off')
     matplotlib.pyplot.imshow(img)
-  tr = glob(os.path.join(train,'*','*.jp*g'))
+#split the data into training validation testing
+tr = glob(os.path.join(train,'*','*.jp*g'))
 tt = glob(os.path.join(test,'*','*.jp*g'))
 v = glob(os.path.join(vali,'*','*.jp*g'))
-  matplotlib.pyplot.figure(figsize=(30,30))
+#diplay all images in training folder
+matplotlib.pyplot.figure(figsize=(30,30))
 for i in range(len(tr)):
     img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(tr[i]),data_format=None,scale=True)
     matplotlib.pyplot.subplot(20,10, i + 1)
@@ -133,6 +139,7 @@ for i in range(len(tr)):
     matplotlib.pyplot.axis('off')
     matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(tr[i]),cv2.COLOR_BGR2RGB))
   matplotlib.pyplot.figure(figsize=(30,30))
+#display all images in validation folder
 for i in range(len(v)):
     img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(v[i]),data_format=None,scale=True)
     matplotlib.pyplot.subplot(5,8, i + 1)
@@ -140,13 +147,15 @@ for i in range(len(v)):
     matplotlib.pyplot.axis('off')
     matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(v[i]),cv2.COLOR_BGR2RGB))
   matplotlib.pyplot.figure(figsize=(30,30))
+#display all images  in testing folder
 for i in range(len(tt)):
     img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(tt[i]),data_format=None,scale=True)
     matplotlib.pyplot.subplot(6,6, i + 1)
     matplotlib.pyplot.grid(False)
     matplotlib.pyplot.axis('off')
     matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(tt[i]),cv2.COLOR_BGR2RGB))
-  vgg3 = tensorflow.keras.applications.vgg19.VGG19(input_shape = imgsize + [3],weights = 'imagenet',include_top = False)
+#making a model
+vgg3 = tensorflow.keras.applications.vgg19.VGG19(input_shape = imgsize + [3],weights = 'imagenet',include_top = False)
 for each_layer in vgg3.layers:
     each_layer.trainable = False
 X6 = tensorflow.keras.layers.Conv2D(32, (3, 3), strides = 2, activation = 'relu', padding = 'same')(vgg3.output)
@@ -158,7 +167,7 @@ y_pred6 = tensorflow.keras.layers.Dense(2,activation = 'sigmoid')(X6)
 model6 = tensorflow.keras.models.Model(inputs = vgg3.input,outputs = y_pred6)
 model6.summary()
 model6.compile(loss = 'sparse_categorical_crossentropy',optimizer = 'adam',metrics = ['accuracy'])
-  resnet3 = tensorflow.keras.applications.resnet.ResNet50(input_shape = imgsize + [3],weights = 'imagenet',include_top = False)
+resnet3 = tensorflow.keras.applications.resnet.ResNet50(input_shape = imgsize + [3],weights = 'imagenet',include_top = False)
 for each_layer in resnet3.layers:
     each_layer.trainable = False
 X7 = tensorflow.keras.layers.Conv2D(32, (3, 3), strides = 2, activation = 'relu', padding = 'same')(resnet3.output)
@@ -170,28 +179,35 @@ y_pred7 = tensorflow.keras.layers.Dense(2,activation = 'sigmoid')(X7)
 model7 = tensorflow.keras.models.Model(inputs = resnet3.input,outputs = y_pred7)
 model7.summary()
 model7.compile(loss = 'sparse_categorical_crossentropy',optimizer = 'adam',metrics = ['accuracy'])
+#creating generators  for data augmentation
 generator = tensorflow.keras.preprocessing.image.ImageDataGenerator(rotation_range = 20,width_shift_range = 0.1,height_shift_range = 0.1,shear_range = 0.1,zoom_range = 0.2,horizontal_flip = True,vertical_flip = True,preprocessing_function = tensorflow.keras.applications.resnet.preprocess_input)
 training_generator = generator.flow_from_directory(directory = train,target_size = imgsize,shuffle = True,batch_size = 10,class_mode = 'sparse')
 validation_generator = generator.flow_from_directory(directory = vali,target_size = imgsize,shuffle = True,batch_size = 5,class_mode = 'sparse')
-  matplotlib.pyplot.figure(figsize=(10,10))
+#training the models
+historyvgg3 = model6.fit_generator(generator = training_generator,validation_data = validation_generator,epochs = 10,steps_per_epoch = len(tr)//10,validation_steps = len(v)//10)
+historyresnet3 = model7.fit_generator(generator = training_generator,validation_data = validation_generator,epochs = 10,steps_per_epoch = len(tr)//10,validation_steps = len(v)//10)
+#display the loss graph
+matplotlib.pyplot.figure(figsize=(10,10))
 matplotlib.pyplot.plot(historyvgg3.history['loss'], label = 'loss')
 matplotlib.pyplot.plot(historyvgg3.history['val_loss'], label = 'val_loss')
 matplotlib.pyplot.legend()
-  matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.figure(figsize=(10,10))
 matplotlib.pyplot.plot(historyresnet3.history['loss'], label = 'loss')
 matplotlib.pyplot.plot(historyresnet3.history['val_loss'], label = 'val_loss')
 matplotlib.pyplot.legend()
-  matplotlib.pyplot.figure(figsize=(10,10))
+#display the accuracy graph
+matplotlib.pyplot.figure(figsize=(10,10))
 matplotlib.pyplot.plot(historyvgg3.history["accuracy"], label="train_accuracy")
 matplotlib.pyplot.plot(historyvgg3.history["val_accuracy"], label="val_accuracy")
 matplotlib.pyplot.legend()
 matplotlib.pyplot.show()
-  matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.figure(figsize=(10,10))
 matplotlib.pyplot.plot(historyresnet3.history["accuracy"], label="train_accuracy")
 matplotlib.pyplot.plot(historyresnet3.history["val_accuracy"], label="val_accuracy")
 matplotlib.pyplot.legend()
 matplotlib.pyplot.show()
-  ypred3 = []
+#pediction
+ypred3 = []
 y_true3 = []
 each_index3 = 0
 test_generator3 = generator.flow_from_directory(directory = test,target_size = imgsize,shuffle = True,batch_size = 5 * 10)
@@ -204,7 +220,7 @@ for each_X3, each_y3 in test_generator3:
     y_true3 = numpy.concatenate((y_true3, each_y_true3))
     if len(y_true3) >= len(tt):
         break
-  ypred7 = []
+ypred7 = []
 y_true7 = []
 each_index7 = 0
 test_generator7 = generator.flow_from_directory(directory = test,target_size = imgsize,shuffle = True,batch_size = 5 * 10)
@@ -217,7 +233,8 @@ for each_X7,each_y7 in test_generator7:
     y_true7 = numpy.concatenate((y_true7, each_y_true7))
     if len(y_true7) >= len(tt):
         break
-  accuracy3 = accuracy_score(y_true = y_true3, y_pred = ypred3)
+#confusion matrix , accuracy score , f1 score
+accuracy3 = accuracy_score(y_true = y_true3, y_pred = ypred3)
 print('accuracy :',accuracy3)
 f13 = f1_score(y_true = y_true3, y_pred = ypred3)
 print('f1 :',f13)
