@@ -1,3 +1,4 @@
+#import packages
 import pandas
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -32,6 +33,7 @@ from keras.layers import Dense
 import matplotlib.pyplot
 from sklearn.metrics import confusion_matrix,classification_report
 from wordcloud import WordCloud
+#load data
 def load(folder_path):
     revss = []
     for filename in os.listdir(folder_path):
@@ -43,10 +45,7 @@ pos = load('./negposreview/pos')
 neg = load('./negposreview/neg')
 pospos = pandas.DataFrame(pos,columns=['movie review'])
 negneg = pandas.DataFrame(neg,columns=['movie review'])
-print(len(pospos))
-print(pospos['movie review'][0])
-print(len(negneg))
-print(negneg['movie review'][0])
+#creating a wordcloud
 post = pospos.rename({'movie review':'moviereview'},axis=1)
 post = post.moviereview[0]
 wcp = WordCloud().generate(post)
@@ -61,34 +60,9 @@ matplotlib.pyplot.figure(figsize=(10,10))
 matplotlib.pyplot.imshow(wcn,interpolation='bilinear')
 matplotlib.pyplot.axis('off')
 matplotlib.pyplot.show()
+#creating a cleaning function
 posr = pospos['movie review']
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts(posr)
-sequences = tokenizer.texts_to_sequences(posr)
-max_posseq_length = max([len(posr) for posr in sequences])
-min_posseq_length = min([len(posr) for posr in sequences])
-print("The longest positive review:", max_posseq_length)
-print("The shortest positive review:", min_posseq_length)
-total_num_pos_seq = sum(len(seq) for seq in sequences)
-num_sequences = len(sequences)
-average_posseq_length = float(total_num_pos_seq / num_sequences)
-print(f"Total Length: {total_num_pos_seq}")
-print(f"Number of Sequences: {num_sequences}")
-print(f"Average Length: {average_posseq_length}")
 negr = negneg['movie review']
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts(negr)
-sequences = tokenizer.texts_to_sequences(negr)
-max_negseq_length = max([len(negr) for negr in sequences])
-min_negseq_length = min([len(negr) for negr in sequences])
-print("The longest negative review:", max_negseq_length)
-print("The shortest negative review:", min_negseq_length)
-total_num_neg_seq = sum(len(seq) for seq in sequences)
-num_sequences = len(sequences)
-average_negseq_length = float(total_num_neg_seq / num_sequences)
-print(f"Total Length: {total_num_neg_seq}")
-print(f"Number of Sequences: {num_sequences}")
-print(f"Average Length: {average_negseq_length}")
 def clean(input_text):
     output_text = str(input_text).translate(str.maketrans('','',string.punctuation))
     output_text = output_text.lower()
@@ -111,6 +85,7 @@ posposlem = posr.apply(clean)
 posposlem = posposlem.apply(lemmatize_text)
 negneglem = negr.apply(clean)
 negneglem = negneglem.apply(lemmatize_text)
+#randoizing the data to avoid the model from memorizing
 posposlems = pandas.DataFrame(posposlem)
 posposlems['review sentiment'] = 1
 negneglems = pandas.DataFrame(negneglem)
@@ -121,6 +96,7 @@ pnrs = pnrs.sample(frac = 1)
 print(pnrs.head())
 print(pnrs[995:1005])
 print(pnrs.tail())
+#spliting the data 
 bow_vectorizer = CountVectorizer()
 countX = pnrs["movie review"]
 county = pnrs["review sentiment"]
@@ -169,6 +145,7 @@ print('x:')
 print(tfidX)
 print('y:')
 print(tfidy)
+#creating and training the model
 model = Sequential()
 model.add(Dense(64, input_dim=tfidX.shape[1], activation='relu'))
 model.add(Dense(tfidy.shape[1], activation='sigmoid'))
@@ -189,6 +166,7 @@ loss, accuracy = model1.evaluate(countX_test,county_test)
 print(f'Accuracy: {accuracy}')
 preds1 = model1.predict(countX_test)
 print(preds1[0:5])
+#comparing between the loss and accuracy for both tfidf and countvectorizer
 def plot_graphs(H, metric):
   matplotlib.pyplot.style.use("ggplot")
   matplotlib.pyplot.figure(figsize=(10,10))
@@ -211,6 +189,7 @@ def plot_graphs(H, metric):
   matplotlib.pyplot.legend()
   matplotlib.pyplot.show( )
 plot_graphs(historycount,'accuracy')
+#prediction
 predictedtfidf = model.predict(tfidX_test)
 predicted_labeltfidf=[numpy.argmax(each) for each in numpy.array(predictedtfidf)]
 y_test_labeltfidf=[numpy.argmax(each) for each in numpy.array(tfidy_test)]
@@ -223,8 +202,10 @@ y_test_labelcount=[numpy.argmax(each) for each in numpy.array(county_test)]
 print("Confusion matrix:")
 print(confusion_matrix(y_test_labelcount,predicted_labelcount))
 print(classification_report(y_test_labelcount,predicted_labelcount))
+#unseen data
 neg_text="Just when you think you’ve seen the worst movie ever made,along comes this pile of toxic waste."
 pos_text='This is going to go down as one of 2022’s most entertaining motion pictures.'
+#predict on unseen data
 def encode_sentencetfidf(input_text):
     encoded_text = tfidf_vectorizer.transform([input_text])
     encoded_text = encoded_text.toarray()
@@ -259,6 +240,7 @@ countvpredneg = encode_sentencecountv(neg_text)
 print(predictioncountv(countvpredneg))
 countvpredpos = encode_sentencecountv(pos_text)
 print(predictioncountv(countvpredpos))
+#apply cosine similarity to see how close the model thinks the unseen data are to one another 
 from sklearn.metrics.pairwise import cosine_similarity
 neg_text="Just when you think you’ve seen the worst movie ever made,along comes this pile of toxic waste."
 pos_text='This is going to go down as one of 2022’s most entertaining motion pictures.'
