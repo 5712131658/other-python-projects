@@ -1,0 +1,276 @@
+import pandas
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.sparse import hstack
+import re
+import string
+import nltk
+import numpy
+from nltk.tokenize import word_tokenize
+from tensorflow.keras.preprocessing.text import Tokenizer
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from sklearn.model_selection import train_test_split
+import tensorflow 
+from tensorflow.keras.models import Sequential
+import matplotlib.pyplot 
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+nltk_stopwords = stopwords.words('english')
+import nltk
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
+import random
+import os
+from keras.models import Sequential
+from keras.losses import sparse_categorical_crossentropy
+from keras.losses import categorical_crossentropy
+from keras.losses import binary_crossentropy
+from tensorflow.keras.optimizers import SGD
+from keras.layers import Dense
+import matplotlib.pyplot
+from sklearn.metrics import confusion_matrix,classification_report
+from wordcloud import WordCloud
+def load(folder_path):
+    revss = []
+    for filename in os.listdir(folder_path):
+        with open(os.path.join(folder_path,filename),'r',encoding='utf-8') as file:
+            rev = file.read()
+            revss.append([rev])
+    return revss
+pos = load('./negposreview/pos')
+neg = load('./negposreview/neg')
+pospos = pandas.DataFrame(pos,columns=['movie review'])
+negneg = pandas.DataFrame(neg,columns=['movie review'])
+print(len(pospos))
+print(pospos['movie review'][0])
+print(len(negneg))
+print(negneg['movie review'][0])
+post = pospos.rename({'movie review':'moviereview'},axis=1)
+post = post.moviereview[0]
+wcp = WordCloud().generate(post)
+matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.imshow(wcp,interpolation='bilinear')
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.show()
+negt = negneg.rename({'movie review':'moviereview'},axis=1)
+negt = negt.moviereview[0]
+wcn = WordCloud().generate(negt)
+matplotlib.pyplot.figure(figsize=(10,10))
+matplotlib.pyplot.imshow(wcn,interpolation='bilinear')
+matplotlib.pyplot.axis('off')
+matplotlib.pyplot.show()
+posr = pospos['movie review']
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(posr)
+sequences = tokenizer.texts_to_sequences(posr)
+max_posseq_length = max([len(posr) for posr in sequences])
+min_posseq_length = min([len(posr) for posr in sequences])
+print("The longest positive review:", max_posseq_length)
+print("The shortest positive review:", min_posseq_length)
+total_num_pos_seq = sum(len(seq) for seq in sequences)
+num_sequences = len(sequences)
+average_posseq_length = float(total_num_pos_seq / num_sequences)
+print(f"Total Length: {total_num_pos_seq}")
+print(f"Number of Sequences: {num_sequences}")
+print(f"Average Length: {average_posseq_length}")
+negr = negneg['movie review']
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(negr)
+sequences = tokenizer.texts_to_sequences(negr)
+max_negseq_length = max([len(negr) for negr in sequences])
+min_negseq_length = min([len(negr) for negr in sequences])
+print("The longest negative review:", max_negseq_length)
+print("The shortest negative review:", min_negseq_length)
+total_num_neg_seq = sum(len(seq) for seq in sequences)
+num_sequences = len(sequences)
+average_negseq_length = float(total_num_neg_seq / num_sequences)
+print(f"Total Length: {total_num_neg_seq}")
+print(f"Number of Sequences: {num_sequences}")
+print(f"Average Length: {average_negseq_length}")
+def clean(input_text):
+    output_text = str(input_text).translate(str.maketrans('','',string.punctuation))
+    output_text = output_text.lower()
+    output_text = re.sub(r'\d+', '', output_text)    
+    output_text = output_text.strip()
+    output_text = ' '.join(output_text.split())  
+    return output_text
+from nltk.stem import WordNetLemmatizer
+def lemmatize_text(text):
+    lemmatizer = WordNetLemmatizer()
+    stopword = ['www','.com','http']
+    nltk_stopwords = stopwords.words('english')
+    stop = (stopword) + (nltk_stopwords)
+    words = word_tokenize(text)
+    words = [word for word in words if word.lower() not in stop]
+    lemmatized_words = [lemmatizer.lemmatize(word) for word in words]
+    output_text = ' '.join(lemmatized_words)
+    return output_text
+posposlem = posr.apply(clean)
+posposlem = posposlem.apply(lemmatize_text)
+negneglem = negr.apply(clean)
+negneglem = negneglem.apply(lemmatize_text)
+posposlems = pandas.DataFrame(posposlem)
+posposlems['review sentiment'] = 1
+negneglems = pandas.DataFrame(negneglem)
+negneglems['review sentiment'] = 0
+pnrs = pandas.concat([posposlems,negneglems]).reset_index()
+pnrs = pnrs.drop(columns='index')
+pnrs = pnrs.sample(frac = 1)
+print(pnrs.head())
+print(pnrs[995:1005])
+print(pnrs.tail())
+bow_vectorizer = CountVectorizer()
+countX = pnrs["movie review"]
+county = pnrs["review sentiment"]
+countX = bow_vectorizer.fit_transform(countX)
+countX = countX.toarray()
+county = pandas.get_dummies(county)
+print('x shape:',countX.shape)
+print('y shape:',county.shape)
+county = county.values
+countX_train,countX_test,county_train,county_test = train_test_split(countX,county,test_size=0.1,random_state=42)
+print('len of x:',len(countX))
+print('len of y:',len(county))
+print('xtrain:')
+print(countX_train[:10])
+print('xtest:')
+print(countX_test[:10])
+print('ytrain:')
+print(county_train[:10])
+print('ytest:')
+print(county_test[:10])
+print('x:')
+print(countX)
+print('y:')
+print(county)
+tfidf_vectorizer = TfidfVectorizer()
+tfidX = pnrs["movie review"]
+tfidy = pnrs["review sentiment"]
+tfidX = tfidf_vectorizer.fit_transform(tfidX)
+tfidX = tfidX.toarray()
+tfidy = pandas.get_dummies(tfidy)
+print('x shape:',tfidX.shape)
+print('y shape:',tfidy.shape)
+tfidy = tfidy.values
+tfidX_train,tfidX_test,tfidy_train,tfidy_test = train_test_split(tfidX,tfidy,test_size=0.1,random_state=42)
+print('len of x:',len(tfidX))
+print('len of y:',len(tfidy))
+print('xtrain:')
+print(tfidX_train[:10])
+print('xtest:')
+print(tfidX_test[:10])
+print('ytrain:')
+print(tfidy_train[:10])
+print('ytest:')
+print(tfidy_test[:10])
+print('x:')
+print(tfidX)
+print('y:')
+print(tfidy)
+model = Sequential()
+model.add(Dense(64, input_dim=tfidX.shape[1], activation='relu'))
+model.add(Dense(tfidy.shape[1], activation='sigmoid'))
+model.summary()
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+historytfidf = model.fit(tfidX_train,tfidy_train,epochs=10,validation_data=(tfidX_test,tfidy_test))
+loss, accuracy = model.evaluate(tfidX_test,tfidy_test)
+print(f'Accuracy: {accuracy}')
+preds = model.predict(tfidX_test)
+print(preds[0:5])
+model1 = Sequential()
+model1.add(Dense(64, input_dim=countX.shape[1], activation='softmax'))
+model1.add(Dense(county.shape[1], activation='sigmoid'))
+model1.summary()
+model1.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+historycount = model1.fit(countX_train,county_train,epochs=10,validation_data=(countX_test,county_test))
+loss, accuracy = model1.evaluate(countX_test,county_test)
+print(f'Accuracy: {accuracy}')
+preds1 = model1.predict(countX_test)
+print(preds1[0:5])
+def plot_graphs(H, metric):
+  matplotlib.pyplot.style.use("ggplot")
+  matplotlib.pyplot.figure(figsize=(10,10))
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["loss"], label="train_loss")
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["val_loss"], label="val_loss")
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["accuracy"], label="train_acc")
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["val_accuracy"], label="val_acc")
+  matplotlib.pyplot.title("Training Loss and Accuracy tfidf")
+  matplotlib.pyplot.legend()
+  matplotlib.pyplot.show( )
+plot_graphs(historytfidf,'accuracy')
+def plot_graphs(H, metric):
+  matplotlib.pyplot.style.use("ggplot")
+  matplotlib.pyplot.figure(figsize=(10,10))
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["loss"], label="train_loss")
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["val_loss"], label="val_loss")
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["accuracy"], label="train_acc")
+  matplotlib.pyplot.plot(numpy.arange(0,10), H.history["val_accuracy"], label="val_acc")
+  matplotlib.pyplot.title("Training Loss and Accuracy countvectorizer")
+  matplotlib.pyplot.legend()
+  matplotlib.pyplot.show( )
+plot_graphs(historycount,'accuracy')
+predictedtfidf = model.predict(tfidX_test)
+predicted_labeltfidf=[numpy.argmax(each) for each in numpy.array(predictedtfidf)]
+y_test_labeltfidf=[numpy.argmax(each) for each in numpy.array(tfidy_test)]
+print("Confusion matrix:")
+print(confusion_matrix(y_test_labeltfidf,predicted_labeltfidf))
+print(classification_report(y_test_labeltfidf,predicted_labeltfidf))
+predictedcount = model1.predict(countX_test)
+predicted_labelcount=[numpy.argmax(each) for each in numpy.array(predictedcount)]
+y_test_labelcount=[numpy.argmax(each) for each in numpy.array(county_test)]
+print("Confusion matrix:")
+print(confusion_matrix(y_test_labelcount,predicted_labelcount))
+print(classification_report(y_test_labelcount,predicted_labelcount))
+neg_text="Just when you think you’ve seen the worst movie ever made,along comes this pile of toxic waste."
+pos_text='This is going to go down as one of 2022’s most entertaining motion pictures.'
+def encode_sentencetfidf(input_text):
+    encoded_text = tfidf_vectorizer.transform([input_text])
+    encoded_text = encoded_text.toarray()
+    return encoded_text
+def predictiontfidf(encoded_text):
+    predictions = model.predict(encoded_text)
+    predicted_class = numpy.argmax(predictions)
+    print("The predicted probability is:", predictions)
+    print("The predicted class is:", predicted_class)
+    if predicted_class == 0:
+        print("The provided text is classified as: Negative")
+    else:
+        print("The provided text is classified as: Positive")
+def encode_sentencecountv(input_text):
+    encoded_text = bow_vectorizer.transform([input_text])
+    encoded_text = encoded_text.toarray()
+    return encoded_text
+def predictioncountv(encoded_text):
+    predictions = model1.predict(encoded_text)
+    predicted_class = numpy.argmax(predictions)
+    print("The predicted probability is:", predictions)
+    print("The predicted class is:", predicted_class)
+    if predicted_class == 0:
+        print("The provided text is classified as: Negative")
+    else:
+        print("The provided text is classified as: Positive")
+tfidf_predpos = encode_sentencetfidf(pos_text)
+print(predictiontfidf(tfidf_predpos))
+tfidf_predneg = encode_sentencetfidf(neg_text)
+print(predictiontfidf(tfidf_predneg))
+countvpredneg = encode_sentencecountv(neg_text)
+print(predictioncountv(countvpredneg))
+countvpredpos = encode_sentencecountv(pos_text)
+print(predictioncountv(countvpredpos))
+from sklearn.metrics.pairwise import cosine_similarity
+neg_text="Just when you think you’ve seen the worst movie ever made,along comes this pile of toxic waste."
+pos_text='This is going to go down as one of 2022’s most entertaining motion pictures.'
+def findSimiarlTextModel(pos_text,neg_text):
+    vectors = tfidf_vectorizer.fit_transform([pos_text,neg_text])
+    similarity = cosine_similarity(vectors[0],vectors[1])
+    return similarity[0][0]
+cosine = findSimiarlTextModel(pos_text,neg_text)
+print(cosine)
+def findSimiarlTextModel1(pos_text,neg_text):
+    vectors = bow_vectorizer.fit_transform([pos_text,neg_text])
+    similarity = cosine_similarity(vectors[0],vectors[1])
+    return similarity[0][0]
+cosine1 = findSimiarlTextModel1(pos_text,neg_text)
+print(cosine1)
