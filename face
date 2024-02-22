@@ -1,0 +1,70 @@
+import os
+import cv2
+from sklearn.metrics import confusion_matrix,accuracy_score,f1_score,classification_report
+inn = './data/'
+out = './N/'
+classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+def predict_face(imagepic,fil):
+    g = cv2.cvtColor(imagepic, cv2.COLOR_BGR2GRAY)
+    faces = classifier.detectMultiScale(g,scaleFactor=1.2,minNeighbors=5)
+    if len(faces) > 0:
+        for (x, y, w, h) in faces:
+            cv2.rectangle(imagepic,(x, y),(x+w, y+h),(000,111,222),2)
+        cv2.imwrite(os.path.join(out,f'{fil}_face_detected.jpg'),imagepic)
+        return 1
+    else:
+        cv2.imwrite(os.path.join(out,f'{fil}_face_not_detected.jpg'),imagepic)
+        return 0
+predtrue = []
+predfalse = []
+for f in os.listdir(inn):
+    if f.endswith('.jpg'):
+        image = cv2.imread(os.path.join(inn,f))
+        truepred = 1 if f.startswith("P") else 0
+        predtrue.append(truepred)
+        falsepred = predict_face(image,os.path.splitext(f)[0])
+        predfalse.append(falsepred)
+print('True Negative :' , len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_not_detected.jpg')]))
+print('False Negative :' , len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_not_detected.jpg')]))
+print('True Positive :' , len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))
+print('False Positive :' , len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_detected.jpg')]))
+print('Total predicted positive :' , len([f for f in os.listdir(out) if f.endswith('_face_detected.jpg')]))
+print('Total predicted Negative :' , len([f for f in os.listdir(out) if f.endswith('_face_not_detected.jpg')]))
+import matplotlib.pyplot
+for p in os.listdir(out):
+    if p.endswith('face_detected.jpg'):
+        img = cv2.imread(os.path.join(out,p))
+        img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+        matplotlib.pyplot.subplots(1,1)
+        matplotlib.pyplot.axis('off')
+        matplotlib.pyplot.imshow(img)
+import matplotlib.pyplot
+for n in os.listdir(out):
+    if n.endswith('_face_not_detected.jpg'):
+        img = cv2.imread(os.path.join(out,n))
+        img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+        matplotlib.pyplot.subplots(1,1)
+        matplotlib.pyplot.axis('off')
+        matplotlib.pyplot.imshow(img)
+from glob import glob
+import tensorflow
+import matplotlib.pyplot
+z = glob(os.path.join(inn,'*jp*g'))
+matplotlib.pyplot.figure(figsize=(10,10))
+for i in range(len(z)):
+    img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(z[i]),data_format=None,scale=True)
+    matplotlib.pyplot.subplot(5,10, i + 1)
+    matplotlib.pyplot.grid(False)
+    matplotlib.pyplot.axis('off')
+    matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(z[i]),cv2.COLOR_BGR2RGB))
+    from glob import glob
+import tensorflow
+import matplotlib.pyplot
+a = glob(os.path.join(out,'*jp*g'))
+matplotlib.pyplot.figure(figsize=(10,10))
+for i in range(len(a)):
+    img = tensorflow.keras.preprocessing.image.array_to_img(cv2.imread(a[i]),data_format=None,scale=True)
+    matplotlib.pyplot.subplot(5,10, i + 1)
+    matplotlib.pyplot.grid(False)
+    matplotlib.pyplot.axis('off')
+    matplotlib.pyplot.imshow(cv2.cvtColor(cv2.imread(a[i]),cv2.COLOR_BGR2RGB))
