@@ -1,9 +1,12 @@
+#import packages
 import os
 import cv2
 from sklearn.metrics import confusion_matrix,accuracy_score,f1_score,classification_report
+#import pics from source
 inn = './data/'
 out = './N/'
 classifier = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#creating a function that detects if there is a face and then drawing a box if there is 
 def predict_face(imagepic,fil):
     g = cv2.cvtColor(imagepic, cv2.COLOR_BGR2GRAY)
     faces = classifier.detectMultiScale(g,scaleFactor=1.2,minNeighbors=5)
