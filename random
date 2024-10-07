@@ -314,3 +314,50 @@ c1 = df[df['class'] == 'Iris-virginica']
 print(c1)
 c2 = df[df['class'] == 'Iris-versicolor']
 print(c2)
+ni = [-1] + list(df.index)
+df = df.reindex(ni)
+df.loc[-1] = ['sepal length','sepal width','petal length','petal width','class']
+print(df)
+print(df['class'].value_counts())
+label_encode = {"class": {"Iris-setosa":1}}
+label_encode1 = {"class": {"Iris-versicolor":2}}
+label_encode2 = {"class": {"Iris-virginica":3}}
+df.replace(label_encode,inplace=True)
+df.replace(label_encode1,inplace=True)
+df.replace(label_encode2,inplace=True)
+KNN2 = KNeighborsClassifier()
+x1 = df.drop(columns='class',axis=1)
+y1 = df['class']
+print(x1.head())
+print(y1.head())
+KNN2.fit(x1,y1)
+test5 = pandas.DataFrame()
+test5['sepal length'] = [5]
+test5['sepal width'] = [3]
+test5['petal length'] = [5]
+test5['petal width'] = [2]
+predict_flower4 = KNN2.predict(test5)
+if predict_flower4 == 1:
+    print('iris-setosa')
+elif predict_flower4 == 2:
+    print('iris-versicolor')
+else:
+    print('iris-virginica')
+dt1 = tree.DecisionTreeClassifier()
+x4 = df.drop(columns='class',axis=1)
+y = df['class']
+print(x4.head())
+print(y.head())
+dt1 = dt1.fit(x4,y)
+test8 = pandas.DataFrame()
+test8['sepal length'] = [5.8]
+test8['sepal width'] = [2.3]
+test8['petal length'] = [5]
+test8['petal width'] = [1.3]
+predict_flower7 = dt1.predict(test8)
+if predict_flower7 == 1:
+    print('iris-setosa')
+elif predict_flower7 == 2:
+    print('iris-versicolor')
+else:
+    print('iris-virginica')
