@@ -463,3 +463,5 @@ elif predict_flower7 == 2:
     print('iris-versicolor')
 else:
     print('iris-virginica')
+df[(df[['Mathematics score', 'English score', 'Science score']] < 0).any(axis=1)|(df[['Mathematics score', 'English score', 'Science score']] >100).any(axis=1)]
+df[(df['Mathematics score']<0)|(df['Mathematics score']>100)]
