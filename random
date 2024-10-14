@@ -465,3 +465,15 @@ else:
     print('iris-virginica')
 df[(df[['Mathematics score', 'English score', 'Science score']] < 0).any(axis=1)|(df[['Mathematics score', 'English score', 'Science score']] >100).any(axis=1)]
 df[(df['Mathematics score']<0)|(df['Mathematics score']>100)]
+flower_types = []
+for ii in range(0,y_new.shape[0]):
+    flower_types.append(numpy.argmax(y_new[ii,:]))
+print(flower_types)
+for i in range(len(flower_types)):
+    if flower_types[i]==0:
+        flower_types[i]='Iris-Setosa'
+    if flower_types[i]==1:
+        flower_types[i]='Iris-Versicolor'
+    if flower_types[i]==2:
+        flower_types[i]='Iris-Verginica'
+print(flower_types)
