@@ -477,3 +477,7 @@ for i in range(len(flower_types)):
     if flower_types[i]==2:
         flower_types[i]='Iris-Verginica'
 print(flower_types)
+a = loan[loan['Personal Loan']==0]
+b= loan[loan['Personal Loan']==1]
+c = b.sample(n=len(a),replace=True)
+len(c)
