@@ -632,3 +632,15 @@ xur,yur = srr.fit_resample(xx,yy)
 seaborn.set(rc = {'figure.figsize':(10,10)},font_scale = 2)
 matplotlib.pyplot.pie([len(df[df['target']==0]),len(df[df['target']==1])],labels=[0,1],autopct='%1.1f%%')
 df.plot(kind='hist','area','line','kde','density',subplots='true',figsize=(10,10),fontsize='5')
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+data = load_iris()
+X, y = data.data, data.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+rf = RandomForestClassifier(oob_score=True, random_state=42)
+rf.fit(X_train, y_train)
+oob_error = 1 - rf.oob_score_
+print(f'OOB Error: {oob_error}')
+test_accuracy = rf.score(X_test, y_test)
+print(f'Test Set Accuracy: {test_accuracy}')
