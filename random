@@ -645,3 +645,4 @@ print(f'OOB Error: {oob_error}')
 test_accuracy = rf.score(X_test, y_test)
 print(f'Test Set Accuracy: {test_accuracy}')
 df[(df['slope']==0)&(df['target']==1)],df[(df['slope']==1)&(df['target']==1)],df[(df['slope']==2)&(df['target']==1)]
+matplotlib.rcParams.update({'axes.labelcolor':'white'})
