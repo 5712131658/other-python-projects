@@ -748,3 +748,44 @@ with open('converted_keras/keras_model.h5', 'rb') as a:
 decoded_lines = [line.decode('ascii', errors='ignore') for line in lines]
 decoded_lines
 [b.decode('ascii',errors='ignore') for b in  open('converted_keras/keras_model.h5','rb').readlines()]
+numeric_cols = df.columns.drop(['target'])
+fig, axes = matplotlib.pyplot.subplots(nrows=len(numeric_cols), ncols=1, figsize=(12, len(numeric_cols)*5))
+for i, col in enumerate(numeric_cols):seaborn.boxplot(x='target', y=col, data=df, ax=axes[i]);axes[i].set_title(f'{col} by target')
+matplotlib.pyplot.tight_layout()
+matplotlib.pyplot.show()
+matplotlib.pyplot.figure(figsize=(10,10));matplotlib.pyplot.title('portions of the data that is cp classes 0 to 3',fontsize=10);a,b,c = matplotlib.pyplot.pie(df.cp.value_counts(),labels=(df.cp.value_counts().index),autopct='%f%%',rotatelabels=True)
+for b,c in zip(b,c):c.set_rotation(b.get_rotation()),b.set_fontsize(10),c.set_fontsize(10)
+behavior_os_counts = pd.crosstab(df['User Behavior Class'], df['Operating System'])
+behavior_os_counts_props = behavior_os_counts.div(behavior_os_counts.sum(axis=1), axis=0)
+behavior_os_counts_props.plot(kind='bar', stacked=False, figsize=(10, 5), colormap='Set3',subplots=True)
+plt.title('Proportional Distribution of User Behavior Class by Operating System')
+plt.xlabel('User Behavior Class')
+plt.ylabel('Proportion')
+plt.xticks(rotation=0)
+plt.legend(title='Operating System')
+plt.show()
+# Optionally, you might want to limit the device models displayed to avoid a cluttered plot:
+# Get the top 10 most common device models for clarity in visualization
+top_device_models = df['Device Model'].value_counts().nlargest(10).index
+# Filter the data to include only the top device models
+filtered_data = df[df['Device Model'].isin(top_device_models)]
+# Create the count plot
+plt.figure(figsize=(12, 8))
+sns.countplot(y='User Behavior Class', hue='Device Model', data=filtered_data, palette='PiYG')
+plt.title('User Behavior Class by Device Model')
+plt.xlabel('Count')
+plt.ylabel('User Behavior Class')
+plt.legend(title='Device Model')
+plt.show()
+# Create a DataFrame for the stacked bar chart
+device_age_group_counts = pd.crosstab(df['Device Model'], df['age_group'])
+# Normalize the counts to sum to 1 for proportional stacking
+device_age_group_props = device_age_group_counts.div(device_age_group_counts.sum(axis=1), axis=0)
+# Plotting the stacked bar chart
+device_age_group_props.plot(kind='barh', stacked=False, figsize=(10, 5), colormap='PiYG')
+plt.title('Proportional Distribution of Age Groups by Device Model')
+plt.xlabel('Proportion')
+plt.ylabel('Device Model')
+plt.legend(title='Age Group')
+plt.tight_layout()
+plt.show()
