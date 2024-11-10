@@ -789,3 +789,24 @@ plt.ylabel('Device Model')
 plt.legend(title='Age Group')
 plt.tight_layout()
 plt.show()
+# Creating a figure with subplots arranged in one row
+fig, axes = plt.subplots(nrows=1, ncols=len(num_columns), figsize=(20, 5))
+# Creating a custom palette
+custom_palette = sns.color_palette("rainbow",3)
+# Creating a boxplot for each numerical column in one row
+for i, col in enumerate(num_columns):
+    sns.boxplot(x=df[numeric_cols][col], ax=axes[i], palette=custom_palette)
+    axes[i].set_title(f'Boxplot of {col}', fontsize=12)
+# Adjusting layout to prevent overlap
+plt.tight_layout()
+plt.show()
+# Box plots for outliers
+# Creating a figure with subplots
+fig, axes = plt.subplots(nrows=len(num_columns), ncols=1, figsize=(8, 10))
+# Creating a boxplot for each numerical column
+for i, col in enumerate(num_columns):
+    sns.boxplot(x=df[numeric_cols][col], ax=axes[i], palette='plasma')
+    axes[i].set_title(f'Boxplot of {col}', fontsize=12)
+# Adjusting layout to prevent overlap
+plt.tight_layout()
+plt.show()
