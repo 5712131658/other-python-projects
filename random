@@ -833,3 +833,4 @@ for f in os.listdir(inn):
         cv2.imwrite(output_path, image)
         falsepred = (image, filename_without_extension)
         alsepred.append(falsepred)
+model2.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['Accuracy','F1Score','FalseNegatives','FalsePositives','MeanAbsoluteError','MeanSquaredError','Precision','R2Score','Recall','RootMeanSquaredError','TrueNegatives','TruePositives'])
