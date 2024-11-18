@@ -887,3 +887,27 @@ for i, augmented_image in enumerate(augmented_images):
     matplotlib.pyplot.imshow(augmented_image)
     matplotlib.pyplot.axis('off')
     matplotlib.pyplot.show()
+import tensorflow,numpy,os
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from glob import glob
+from PIL import Image
+import matplotlib.pyplot as plt
+test = 'test'
+Tained = glob(os.path.join(test, '*', '*.jp*g'))
+for image_path in Tained:
+    image = tensorflow.io.read_file(image_path)
+    image = tensorflow.image.decode_jpeg(image, channels=3)
+    image = tensorflow.image.resize(image, (224, 224))
+    image = tensorflow.cast(image, tensorflow.float32)
+    image = numpy.expand_dims(image.numpy(), axis=0)
+    generator = ImageDataGenerator(rotation_range=20,width_shift_range=0.1,height_shift_range=0.1,shear_range=0.1,zoom_range=0.2,horizontal_flip=True,vertical_flip=True)
+    augmented_images = generator.flow(image, batch_size=1)
+    for i in range(10):
+        augmented_image = next(augmented_images)[0]
+        augmented_image = numpy.clip(augmented_image, 0, 255).astype(numpy.uint8)
+        save_path = f'augmented_image_{os.path.basename(image_path).split(".")[0]}_{i+1}.jpg'
+        augmented_image_pil = Image.fromarray(augmented_image)
+        augmented_image_pil.save(save_path)
+        plt.imshow(augmented_image)
+        plt.axis('off')
+        plt.show()
