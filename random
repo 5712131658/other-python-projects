@@ -911,3 +911,24 @@ for image_path in Tained:
         plt.imshow(augmented_image)
         plt.axis('off')
         plt.show()
+import tensorflow as tensorflow,numpy,os,matplotlib.pyplot
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from PIL import Image
+Tained = 'New folder (14)/WhatsApp Image 2024-11-18 at 09.01.21.jpeg'
+generator = ImageDataGenerator(rotation_range=20,width_shift_range=0.1,height_shift_range=0.1,shear_range=0.1,zoom_range=0.2,horizontal_flip=True,vertical_flip=True)
+image = tensorflow.io.read_file(Tained)
+image = tensorflow.image.decode_jpeg(image, channels=3)
+image = tensorflow.image.resize(image, (224, 224))
+image = tensorflow.cast(image, tensorflow.float32)
+image = numpy.expand_dims(image.numpy(), axis=0)
+augmented_images = generator.flow(image, batch_size=10)
+for i in range(15):
+    augmented_image = next(augmented_images)[0]
+    augmented_image = numpy.clip(augmented_image, 0, 255).astype(numpy.uint8)
+    save_path = f'augmented_image_{os.path.basename(Tained).split(".")[0]}_{i+1}.jpg'
+    augmented_image_pil = Image.fromarray(augmented_image)
+    augmented_image_pil.save(save_path)
+    matplotlib.pyplot.imshow(augmented_image)
+    matplotlib.pyplot.axis('off')
+    matplotlib.pyplot.show()
+    matplotlib.pyplot.close()
