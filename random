@@ -845,3 +845,68 @@ def find_outliers_iqr(df, column):
     # Identify outliers
     outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
     return outliers, lower_bound, upper_bound
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import numpy as np
+import os
+from glob import glob
+from PIL import Image
+import matplotlib.pyplot as plt
+test = 'test'
+Tained = glob(os.path.join(test,'*','*.jp*g'))
+generator = ImageDataGenerator(
+    rotation_range=20,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.1,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    vertical_flip=True
+)
+for image_path in Tained:
+    image = tf.io.read_file(image_path)
+    image = tf.image.decode_jpeg(image, channels=3)
+    image = tf.image.resize(image, (224, 224))
+    image = tf.cast(image, tf.float32)
+    image = np.expand_dims(image.numpy(), axis=0)
+    augmented_images = generator.flow(image, batch_size=10)
+    for i, augmented_image in enumerate(augmented_images):
+        augmented_image = augmented_image[0]
+        augmented_image = np.clip(augmented_image, 0, 255).astype(np.uint8)
+        augmented_image_pil = Image.fromarray(augmented_image)
+        augmented_image_pil.save(f'augmented_image_{os.path.basename(image_path).split(".")[0]}_{i+1}.jpg')
+        plt.imshow(augmented_image)
+        plt.axis('off')  # Turn off axis labels
+        plt.show()
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import numpy as np
+import os
+from glob import glob
+from PIL import Image
+import matplotlib.pyplot as plt
+# test = 'test'
+Tained = 'New folder (4)/WhatsApp Image 2024-11-18 at 00.01.32.jpeg'
+generator = ImageDataGenerator(
+    rotation_range=20,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.1,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    vertical_flip=True
+)
+image = tf.io.read_file(Tained)
+image = tf.image.decode_jpeg(image, channels=3)
+image = tf.image.resize(image, (224, 224))
+image = tf.cast(image, tf.float32)
+image = np.expand_dims(image.numpy(), axis=0)
+augmented_images = generator.flow(image, batch_size=10)
+for i, augmented_image in enumerate(augmented_images):
+    augmented_image = augmented_image[0]
+    augmented_image = np.clip(augmented_image, 0, 255).astype(np.uint8)
+    augmented_image_pil = Image.fromarray(augmented_image)
+    augmented_image_pil.save(f'augmented_image_{os.path.basename(image_path).split(".")[0]}_{i+1}.jpg')
+    plt.imshow(augmented_image)
+    plt.axis('off')  # Turn off axis labels
+    plt.show()
