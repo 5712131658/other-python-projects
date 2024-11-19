@@ -932,3 +932,63 @@ for i in range(15):
     matplotlib.pyplot.axis('off')
     matplotlib.pyplot.show()
     matplotlib.pyplot.close()
+historyvgg3 = model6.fit(training_generator,epochs =    26, steps_per_epoch = len(Trained)// 26, callbacks=[tensorflow.keras.callbacks.EarlyStopping(monitor="val_loss",min_delta=0.001,restore_best_weights=True,patience=7)])
+historyresnet3 = model7.fit(training_generator,epochs = 32, steps_per_epoch = len(Trained)// 25, callbacks=[tensorflow.keras.callbacks.EarlyStopping(monitor="val_loss",min_delta=0.001,restore_best_weights=True,patience=7)])
+import numpy,tensorflow
+from tensorflow.keras.preprocessing import image
+def predict_and_detect_class(model, img_path, target_class, img_size=(100, 100)):
+    img = image.load_img(img_path, target_size=img_size)
+    img_array = image.img_to_array(img)
+    img_array = numpy.expand_dims(img_array, axis=0)
+    img_array = tensorflow.keras.applications.resnet.preprocess_input(img_array)
+    predictions = model.predict(img_array)
+    predicted_class = numpy.argmax(predictions)
+    confidence_score = predictions[0][predicted_class]
+    if predicted_class == target_class:
+        print(f"Detected the target class : Class {target_class} and score is {confidence_score}!")
+    else:
+        print(f"Predicted Class : {predicted_class} - Not the target class and score is {confidence_score}.")
+    return predicted_class, predictions
+target_class = 0
+img_path = 'test/New folder/WhatsApp Image 2024-11-19 at 12.26.01.jpeg'
+img_path1 = 'test/New folder (6)/WhatsApp Image 2024-11-17 at 11.33.22.jpeg'
+img_path2 = 'test/New folder (3)/WhatsApp Image 2024-11-17 at 11.28.55.jpeg'
+img_path3 = 'test/New folder (4)/WhatsApp Image 2024-11-17 at 11.30.01.jpeg'
+predict_and_detect_class(model7, img_path, target_class)
+predict_and_detect_class(model7, img_path1, target_class)
+predict_and_detect_class(model7, img_path2, target_class)
+predict_and_detect_class(model7, img_path3, target_class)
+import cv2,numpy,tensorflow
+from tensorflow.keras.preprocessing import image
+model = tensorflow.keras.models.load_model('resnet.keras')
+target_class = 0
+def predict_frame(frame, model, target_class, img_size=(100, 100)):
+    img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    img_resized = cv2.resize(img, img_size)
+    img_array = image.img_to_array(img_resized)
+    img_array = numpy.expand_dims(img_array, axis=0)
+    img_array = tensorflow.keras.applications.resnet.preprocess_input(img_array)
+    predictions = model.predict(img_array)
+    predicted_class = numpy.argmax(predictions)
+    confidence_score = predictions[0][predicted_class]
+    if predicted_class == target_class:
+        prediction_text = f"class : {target_class} score : {confidence_score}!"
+        color = (0, 255, 0)
+    else:
+        prediction_text = f"class : {predicted_class} score : {confidence_score}"
+        color = (0, 0, 255)
+    return predicted_class, predictions, prediction_text, color
+cap = cv2.VideoCapture(0)
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("Failed to grab frame")
+        break
+    predicted_class, predictions, prediction_text, color = predict_frame(frame, model, target_class)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(frame, prediction_text, (10, 30), font, 1, color, 2)
+    cv2.imshow('Live Prediction', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
