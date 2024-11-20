@@ -27,12 +27,16 @@ for f in os.listdir(inn):
         predtrue.append(truepred)
         falsepred = predict_face(image,os.path.splitext(f)[0])
         predfalse.append(falsepred)
-print('True Negative :' , len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_not_detected.jpg')]))
-print('False Negative :' , len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_not_detected.jpg')]))
-print('True Positive :' , len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))
-print('False Positive :' , len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_detected.jpg')]))
-print('Total predicted positive :' , len([f for f in os.listdir(out) if f.endswith('_face_detected.jpg')]))
-print('Total predicted Negative :' , len([f for f in os.listdir(out) if f.endswith('_face_not_detected.jpg')]))
+print('True Negative : ' , len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_not_detected.jpg')]))
+print('False Negative : ' , len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_not_detected.jpg')]))
+print('True Positive : ' , len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))
+print('False Positive : ' , len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_detected.jpg')]))
+print('Total predicted positive : ' , len([f for f in os.listdir(out) if f.endswith('_face_detected.jpg')]))
+print('Total predicted Negative : ' , len([f for f in os.listdir(out) if f.endswith('_face_not_detected.jpg')]))
+print('Accuracy : ' , (len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_not_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len(os.listdir(out))
+print('Precision : ' , (len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_detected.jpg')])))
+print('Recall : ' , (len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_not_detected.jpg')])))
+print('F1score : ' , (2*(((len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_detected.jpg')])))*((len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_not_detected.jpg')])))))/(((len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('N') and f.endswith('_face_detected.jpg')])))+((len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')]))/(len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_detected.jpg')])+len([f for f in os.listdir(out) if f.startswith('P') and f.endswith('_face_not_detected.jpg')])))))
 import matplotlib.pyplot
 for p in os.listdir(out):
     if p.endswith('face_detected.jpg'):
