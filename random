@@ -1008,3 +1008,18 @@ print(f"True Positives (TP): {TP}")
 print(f"False Positives (FP): {FP}")
 print(f"True Negatives (TN): {TN}")
 print(f"False Negatives (FN): {FN}")
+squared_diffs = [(true - pred) ** 2 for true, pred in zip(ytest, ypred)]
+mse = sum(squared_diffs) / len(ytest)
+rmse = math.sqrt(mse)
+print(f"RMSE: {rmse}"),root_mean_squared_error(ytest,ypred)
+absolute_diffs = [abs(true - pred) for true, pred in zip(ytest,ypred)]
+mae = sum(absolute_diffs) / len(ytest)
+print(f"MAE: {mae}"),mean_absolute_error(ytest,ypred)
+mean_y_true = sum(ytest) / len(ytest)
+tss = sum((true - mean_y_true) ** 2 for true in ytest)
+rss = sum((true - pred) ** 2 for true, pred in zip(ytest, ypred))
+r2 = 1 - (rss / tss)
+print(f"R²: {r2}"),r2_score(ytest,ypred)
+squared_diffs = [(true - pred) ** 2 for true, pred in zip(ytest, ypred)]
+mse = sum(squared_diffs) / len(ytest)
+print(f"MSE: {mse}"),mean_squared_error(ytest,ypred)
