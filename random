@@ -992,3 +992,19 @@ while True:
         break
 cap.release()
 cv2.destroyAllWindows()
+a = pandas.concat([pandas.DataFrame(zip(ytest,ypred))])
+a[(a[0]==0)&(a[1]==1)],a[(a[0]==1)&(a[1]==1)],a[(a[0]==1)&(a[1]==0)],a[(a[0]==0)&(a[1]==0)],len(a[(a[0]==0)&(a[1]==1)]),len(a[(a[0]==1)&(a[1]==1)]),len(a[(a[0]==1)&(a[1]==0)]),len(a[(a[0]==0)&(a[1]==0)])
+TP = FP = TN = FN = 0
+for true, pred in zip(ytest, ypred):
+    if true == 1 and pred == 1:
+        TP += 1
+    elif true == 0 and pred == 1:
+        FP += 1
+    elif true == 0 and pred == 0:
+        TN += 1
+    elif true == 1 and pred == 0:
+        FN += 1
+print(f"True Positives (TP): {TP}")
+print(f"False Positives (FP): {FP}")
+print(f"True Negatives (TN): {TN}")
+print(f"False Negatives (FN): {FN}")
