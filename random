@@ -1202,3 +1202,148 @@ for i in range(2):
     matplotlib.pyplot.plot(far, mr, label=f'Class {i} (DET AUC = {numpy.trapz(far, mr)}')
 matplotlib.pyplot.legend()
 matplotlib.pyplot.show()
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import RidgeClassifier
+data = pd.read_csv('Revision/tiktok.csv')
+X = data.drop(columns=['video_transcription_text','verified_status','author_ban_status','claim_status']).values
+y = data['claim_status'].replace({'claim':0,'opinion':1}).values
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+rc = RidgeClassifier()
+rc.fit(X_train, y_train)
+y_scores = rc.decision_function(X_test)
+plt.figure(figsize=(8, 6))
+fpr, tpr, precision, recall, far, mr = [], [], [], [], [], []
+thresholds = np.linspace(min(y_scores), max(y_scores), 101)
+for threshold in thresholds:   
+    y_pred = (y_scores >= threshold).astype(int)
+    tp = np.sum((y_test == 1) & (y_pred == 1))  
+    fp = np.sum((y_test == 0) & (y_pred == 1))  
+    fn = np.sum((y_test == 1) & (y_pred == 0))  
+    tn = np.sum((y_test == 0) & (y_pred == 0))  
+    tpr_value = tp / (tp + fn) if (tp + fn) > 0 else 0  
+    fpr_value = fp / (fp + tn) if (fp + tn) > 0 else 0  
+    precision_value = tp / (tp + fp) if (tp + fp) > 0 else 0  
+    recall_value = tp / (tp + fn) if (tp + fn) > 0 else 0  
+    far_value = fp / (fp + tn) if (fp + tn) > 0 else 0  
+    mr_value = fn / (fn + tp) if (fn + tp) > 0 else 0  
+    fpr.append(fpr_value)
+    tpr.append(tpr_value)
+    precision.append(precision_value)
+    recall.append(recall_value)
+    far.append(far_value)
+    mr.append(mr_value)
+fpr = np.array(fpr)
+tpr = np.array(tpr)
+precision = np.array(precision)
+recall = np.array(recall)
+far = np.array(far)
+mr = np.array(mr)
+plt.plot(fpr, tpr, label=f'ROC Curve (AUC = {np.trapz(tpr, fpr):.2f})')
+plt.plot(recall, precision, label=f'Precision-Recall Curve (PR AUC = {np.trapz(recall, precision):.2f})')
+plt.plot(far, mr, label=f'DET Curve (DET AUC = {np.trapz(far, mr):.2f})')
+plt.xlabel('False Positive Rate / Recall / FAR')
+plt.ylabel('True Positive Rate / Precision / Miss Rate')
+plt.title('Multi-Curve Evaluation: ROC, PR, and DET')
+plt.legend(loc='lower left')
+plt.show()
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import RidgeClassifier
+data = load_iris()
+X = data.data
+y = data.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+rc = RidgeClassifier()
+rc.fit(X_train, y_train)
+y_scores = rc.decision_function(X_test)
+plt.figure(figsize=(8, 6))
+for i in range(3):
+    fpr = []
+    tpr = []
+    far = []
+    mr = []
+    precision = []
+    recall = []
+    thresholds = np.linspace(-1, 1, 101)
+    for threshold in thresholds:
+        y_pred = (y_scores[:, i] >= threshold).astype(int)
+        y_true_binary = (y_test == i).astype(int)
+        tp = np.sum((y_true_binary == 1) & (y_pred == 1))
+        fp = np.sum((y_true_binary == 0) & (y_pred == 1))
+        fn = np.sum((y_true_binary == 1) & (y_pred == 0))
+        tn = np.sum((y_true_binary == 0) & (y_pred == 0))
+        tpr_value = tp / (tp + fn) if tp + fn > 0 else 0
+        fpr_value = fp / (fp + tn) if fp + tn > 0 else 0
+        far_value = fp / (fp + tn) if (fp + tn) > 0 else 0
+        mr_value = fn / (fn + tp) if (fn + tp) > 0 else 0
+        precision_value = tp / (tp + fp) if tp + fp > 0 else 0
+        recall_value = tp / (tp + fn) if tp + fn > 0 else 0
+        fpr.append(fpr_value)
+        tpr.append(tpr_value)
+        far.append(far_value)
+        mr.append(mr_value)
+        precision.append(precision_value)
+        recall.append(recall_value)
+    fpr = np.array(fpr)
+    tpr = np.array(tpr)
+    far = np.array(far)
+    mr = np.array(mr)
+    precision = np.array(precision)
+    recall = np.array(recall)
+    plt.plot(fpr, tpr, label=f'Class {i} (ROC AUC = {np.trapz(tpr, fpr):.2f})')
+    plt.plot(far, mr, label=f'Class {i} (DET AUC = {np.trapz(far, mr)}')
+    plt.plot(recall, precision, label=f'Class {i} (PR AUC = {np.trapz(recall,precision)}')
+plt.legend()
+plt.show()
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+data = pd.read_csv('Revision/tiktok.csv')
+X = data.drop(columns=['video_transcription_text','verified_status','author_ban_status','claim_status']).values
+y = data['claim_status'].replace({'claim':0,'opinion':1}).values
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+knn = KNeighborsClassifier()
+knn.fit(X_train, y_train)
+y_probs = knn.predict_proba(X_test)[:, 1]
+plt.figure(figsize=(8, 6))
+fpr, tpr, precision, recall, far, mr = [], [], [], [], [], []
+thresholds = np.linspace(0, 1, 101)
+for threshold in thresholds:
+    y_pred = (y_probs >= threshold).astype(int)
+    tp = np.sum((y_test == 1) & (y_pred == 1))
+    fp = np.sum((y_test == 0) & (y_pred == 1))
+    fn = np.sum((y_test == 1) & (y_pred == 0))
+    tn = np.sum((y_test == 0) & (y_pred == 0))
+    tpr_value = tp / (tp + fn) if (tp + fn) > 0 else 0
+    fpr_value = fp / (fp + tn) if (fp + tn) > 0 else 0
+    precision_value = tp / (tp + fp) if (tp + fp) > 0 else 0
+    recall_value = tp / (tp + fn) if (tp + fn) > 0 else 0
+    far_value = fp / (fp + tn) if (fp + tn) > 0 else 0
+    mr_value = fn / (fn + tp) if (fn + tp) > 0 else 0
+    fpr.append(fpr_value)
+    tpr.append(tpr_value)
+    precision.append(precision_value)
+    recall.append(recall_value)
+    far.append(far_value)
+    mr.append(mr_value)
+fpr = np.array(fpr)
+tpr = np.array(tpr)
+precision = np.array(precision)
+recall = np.array(recall)
+far = np.array(far)
+mr = np.array(mr)
+plt.plot(fpr, tpr, label=f'ROC Curve (AUC = {np.trapz(tpr, fpr):.2f})')
+plt.plot(recall, precision, label=f'Precision-Recall Curve (PR AUC = {np.trapz(recall, precision):.2f})')
+plt.plot(far, mr, label=f'DET Curve (DET AUC = {np.trapz(far, mr):.2f})')
+plt.xlabel('False Positive Rate / Recall / FAR')
+plt.ylabel('True Positive Rate / Precision / Miss Rate')
+plt.title('Multi-Curve Evaluation: ROC, PR, and DET')
+plt.legend(loc='lower left')
+plt.show()
