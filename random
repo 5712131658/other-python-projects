@@ -1153,3 +1153,52 @@ plt.legend()
 plt.show()
 ConfusionMatrixDisplay.from_estimator(clf,X_test,clf.predict(X_test))
 ConfusionMatrixDisplay.from_estimator(clf,X_test,y_test)
+import matplotlib.pyplot,numpy
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+data = pd.read_csv('Revision/tiktok.csv')
+X = data.drop(columns=['video_transcription_text','verified_status','author_ban_status','claim_status']).values
+y = data['claim_status'].replace({'claim':0,'opinion':1}).values
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+clf = RandomForestClassifier()
+clf.fit(X_train, y_train)
+y_probs = clf.predict_proba(X_test)
+matplotlib.pyplot.figure(figsize=(8, 6))
+for i in range(2):
+    fpr = []
+    tpr = []
+    precision = []
+    recall = []
+    far = []
+    mr = []
+    thresholds = numpy.linspace(0, 1, 101)
+    for threshold in thresholds:
+        y_pred = (y_probs[:, i] >= threshold).astype(int)
+        y_true_binary = (y_test == i).astype(int)
+        tp = numpy.sum((y_true_binary == 1) & (y_pred == 1))
+        fp = numpy.sum((y_true_binary == 0) & (y_pred == 1))
+        fn = numpy.sum((y_true_binary == 1) & (y_pred == 0))
+        tn = numpy.sum((y_true_binary == 0) & (y_pred == 0))
+        tpr_value = tp / (tp + fn) if tp + fn > 0 else 0
+        fpr_value = fp / (fp + tn) if fp + tn > 0 else 0
+        precision_value = tp / (tp + fp) if tp + fp > 0 else 0
+        recall_value = tp / (tp + fn) if tp + fn > 0 else 0
+        far_value = fp / (fp + tn) if (fp + tn) > 0 else 0
+        mr_value = fn / (fn + tp) if (fn + tp) > 0 else 0
+        fpr.append(fpr_value)
+        tpr.append(tpr_value)
+        precision.append(precision_value)
+        recall.append(recall_value)
+        far.append(far_value)
+        mr.append(mr_value)
+    fpr = numpy.array(fpr)
+    tpr = numpy.array(tpr)
+    precision = numpy.array(precision)
+    recall = numpy.array(recall)
+    far = numpy.array(far)
+    mr = numpy.array(mr)
+    matplotlib.pyplot.plot(fpr, tpr, label=f'Class {i} (ROC AUC = {numpy.trapz(tpr, fpr)})')
+    matplotlib.pyplot.plot(recall, precision, label=f'Class {i} (PR AUC = {numpy.trapz(recall,precision)})')
+    matplotlib.pyplot.plot(far, mr, label=f'Class {i} (DET AUC = {numpy.trapz(far, mr)}')
+matplotlib.pyplot.legend()
+matplotlib.pyplot.show()
