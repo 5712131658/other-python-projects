@@ -2557,3 +2557,27 @@ from sklearn.ensemble import AdaBoostRegressor,BaggingRegressor,ExtraTreesRegres
 from sklearn.svm import LinearSVR,NuSVR,SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
+import matplotlib.pyplot
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import roc_curve, auc, precision_recall_curve, average_precision_score,r2_score,mean_absolute_error,mean_squared_error,root_mean_squared_error
+X = df.drop(columns=['Device Model', 'Operating System', 'Gender', 'User Behavior Class'])
+y = df['User Behavior Class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+clf = LinearRegression()
+clf.fit(X_train, y_train)
+y_probs = clf.predict(X_test)
+matplotlib.pyplot.figure(figsize=(10, 8))
+for i in range(5):
+    y_true_binary = (y_test == i).astype(int)
+    fpr, tpr, _ = roc_curve(y_true_binary, y_probs)
+    precision, recall, _ = precision_recall_curve(y_true_binary, y_probs)
+    roc_auc = auc(fpr, tpr)
+    pr_auc = average_precision_score(y_true_binary, y_probs)
+    matplotlib.pyplot.plot(fpr, tpr, label=f'Class {i} ROC (AUC = {roc_auc})')
+    matplotlib.pyplot.plot(recall, precision, label=f'Class {i} PR (AUC = {pr_auc})')
+matplotlib.pyplot.plot([0, 1], [0, 1])
+matplotlib.pyplot.legend()
+matplotlib.pyplot.show()
+print(f"Model R^2 score: {clf.score(X_test, y_test)}")
+r2_score(y_test, y_probs),mean_absolute_error(y_test, y_probs),mean_squared_error(y_test, y_probs),root_mean_squared_error(y_test, y_probs)
