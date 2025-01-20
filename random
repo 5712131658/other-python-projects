@@ -5844,3 +5844,18 @@ print('gpr r2 score : ',r2_score(ytest,gpr.predict(xtest)))
 print('gpr root mean squared error : ',root_mean_squared_error(ytest,gpr.predict(xtest)))
 print('gpr v measure score : ',v_measure_score(ytest,gpr.predict(xtest)))
 print('gpr accuracy score :',gpr.score(xtest,ytest))
+import pyttsx3,pygame
+class robot :
+    engine = pyttsx3.init()
+    def __init__(self,name):self.name = name;self.battery = 100;self.expression = 'neutral'
+    def speak(self,text):self.engine.say(text);self.engine.runAndWait()
+    def introduction(self):self.speak(f'hello i m {self.name} my current expression is {self.expression}')
+    def changeexpression(self,newexpression):self.expression = newexpression;self.speak(f"{self.name}'s expression is now {self.expression}")
+    def play_sound(self,f):pygame.mixer.music.load(f);pygame.mixer.music.play()
+    def alarm(self):self.speak('warning i m about to paly an alarm sound');pygame.mixer.music.load('warning.wav'),pygame.mixer.music.play()
+def main():my_robot = robot('jeriq');my_robot.introduction();my_robot.changeexpression('sad');my_robot.play_sound('dontLike.mp3');my_robot.alarm()
+if __name__ == '__main__':main()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id) #changing index changes voices but ony 0 and 1 are working here
+engine.say('Hello World')
+engine.runAndWait()
