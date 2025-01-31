@@ -5883,3 +5883,37 @@ pygame.mixer.music.load('dontLike.mp3')
 pygame.mixer.music.play()
 while pygame.mixer.music.get_busy():
     pygame.time.Clock().tick(10)
+import importlib.metadata
+installed_packages = importlib.metadata.distributions()
+for dist in installed_packages:
+    print(f"{dist.metadata['Name']}=={dist.version}")
+import numpy  # Example with numpy
+print(dir(numpy))  # List all attributes of the numpy module
+import tensorflow;help(tensorflow)
+import os
+os.getcwd()
+import os
+print("Python's environment PATH:", os.environ['PATH'])
+import subprocess
+def get_video_duration(file_path):
+    ffprobe_path = 'ffprobe.exe'
+    command = f'"{ffprobe_path}" -i "{file_path}" -show_entries format=duration -v quiet -of csv=p=0'
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(result.stdout.decode('utf-8').strip())
+    duration = float(result.stdout.decode('utf-8').strip(''))
+    return duration
+file_path = 'warning.wav'
+duration = get_video_duration(file_path)
+print(f"Duration of {file_path} is {duration} seconds.")
+import subprocess
+def getversion():
+    command = ['pip', 'show', 'numpy']
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(result.stdout.decode('utf-8'))
+getversion()
+import subprocess
+def get_pip_version():
+    command = ['pip', '--version']
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(result.stdout.decode('utf-8'))
+get_pip_version()
