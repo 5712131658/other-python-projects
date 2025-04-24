@@ -5917,3 +5917,64 @@ def get_pip_version():
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(result.stdout.decode('utf-8'))
 get_pip_version()
+import matplotlib.pyplot
+from matplotlib_venn import venn2
+A = {1, 2, 3}
+B = {3, 4, 5}
+venn = venn2([A, B], set_labels=('A', 'B'))
+only_a = A - B
+venn.get_label_by_id('10').set_text('\n'.join(str(x) for x in sorted(only_a)))
+only_b = B - A
+venn.get_label_by_id('01').set_text('\n'.join(str(x) for x in sorted(only_b)))
+both = A & B
+venn.get_label_by_id('11').set_text('\n'.join(str(x) for x in sorted(both)))
+matplotlib.pyplot.title("Venn Diagram Showing Elements in Each Region")
+matplotlib.pyplot.show()
+from matplotlib import pyplot as plt
+from matplotlib_venn import venn2
+A = {1, 2, 3}
+B = {6, 4, 5}
+venn = venn2([A, B], set_labels=('A', 'B'))
+only_a = A - B
+venn.get_label_by_id('10').set_text('\n'.join(str(x) for x in sorted(only_a)))
+only_b = B - A
+venn.get_label_by_id('01').set_text('\n'.join(str(x) for x in sorted(only_b)))
+matplotlib.pyplot.title("Venn Diagram Showing Elements in Each Region")
+matplotlib.pyplot.show()
+import matplotlib.pyplot
+from matplotlib_venn import venn2
+from matplotlib.patches import Rectangle
+U = set(range(1, 11))  
+A = {2, 4, 6, 8}
+B = {3, 4, 5, 6}
+outside = U - (A | B)
+fig, ax = matplotlib.pyplot.subplots()
+venn = venn2([A, B], set_labels=('A', 'B'), ax=ax)
+venn.get_label_by_id('10').set_text('\n'.join(str(x) for x in sorted(A - B)))
+venn.get_label_by_id('01').set_text('\n'.join(str(x) for x in sorted(B - A)))
+venn.get_label_by_id('11').set_text('\n'.join(str(x) for x in sorted(A & B)))
+rect = Rectangle((-1.4, -1.2), 2.8, 2.4, fill=False, edgecolor='black', linewidth=1.5)
+ax.add_patch(rect)
+matplotlib.pyplot.text(-1.35, 1.1, 'U', fontsize=12)
+outside_str = ', '.join(str(x) for x in sorted(outside))
+matplotlib.pyplot.text(-1.3, -1.1, f'Outside A ∪ B: {outside_str}', fontsize=10)
+matplotlib.pyplot.title("Venn Diagram with Universal Set and Elements")
+matplotlib.pyplot.show()
+import matplotlib.pyplot
+from matplotlib_venn import venn2
+from matplotlib.patches import Rectangle
+U = set(range(1, 11))  
+A = {2, 4, 6, 8}
+B = {3, 9, 5, 1}
+outside = U - (A | B)
+fig, ax = matplotlib.pyplot.subplots()
+venn = venn2([A, B], set_labels=('A', 'B'), ax=ax)
+venn.get_label_by_id('10').set_text('\n'.join(str(x) for x in sorted(A - B)))
+venn.get_label_by_id('01').set_text('\n'.join(str(x) for x in sorted(B - A)))
+rect = Rectangle((-1.4, -1.2), 2.8, 2.4, fill=False, edgecolor='black', linewidth=1.5)
+ax.add_patch(rect)
+matplotlib.pyplot.text(-1.35, 1.1, 'U', fontsize=12)
+outside_str = ', '.join(str(x) for x in sorted(outside))
+matplotlib.pyplot.text(-1.3, -1.1, f'Outside A ∪ B: {outside_str}', fontsize=10)
+matplotlib.pyplot.title("Venn Diagram with Universal Set and Elements")
+matplotlib.pyplot.show()
