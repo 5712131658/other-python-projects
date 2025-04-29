@@ -6022,3 +6022,13 @@ outside_text = ', '.join(map(str, sorted(outside)))
 plt.text(-1.45, -1.3, f'Outside A ∪ B ∪ C: {outside_text}', fontsize=10)
 plt.title("3-Way Venn Diagram Showing All Elements (with Universal Set)")
 plt.show()
+import math
+import inflect
+ntw = inflect.engine()
+print('number','square','square root','english')
+for i in range(6):
+    print(i,'     ',i**2,'    ',round(math.sqrt(i),2),'       ',ntw.number_to_words(i))
+f = open('te.txt','r').readlines()
+print(f[0],f[3],f[4])
+print('{:.10f}'.format(1.33e-06))
+('{:.0f}'.format(1.33e06))
