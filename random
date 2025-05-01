@@ -6033,3 +6033,21 @@ print(f[0],f[3],f[4])
 print('{:.10f}'.format(1.33e-06))
 ('{:.0f}'.format(1.33e06))
 inflect.engine.number_to_words(self=inflect.engine(),num='1,17823456789.0213')
+from fractions import Fraction
+decimal_str = Fraction(statistics.pstdev(sorted([151,194,160,173,151,183,280]))).limit_denominator()
+frac = Fraction(decimal_str).limit_denominator()
+whole = frac.numerator // frac.denominator
+remainder = Fraction(frac.numerator % frac.denominator, frac.denominator)
+if whole == 0:print(f"Mixed Fraction: {remainder}")
+elif remainder == 0:print(f"Mixed Fraction: {whole}")
+else:print(f"Mixed Fraction: {whole} {remainder}")
+import statistics
+data = [10, 20, 30, 40, 50]
+std_dev = statistics.stdev(data)  # sample standard deviation
+print("Standard Deviation:", std_dev)
+import statistics
+import statistics
+data = [10, 20, 30, 40, 50]
+std_dev = statistics.pstdev(data)  # sample standard deviation
+print("Standard Deviation:", std_dev)
+statistics.stdev(c),statistics.pstdev(c),statistics.variance(c),statistics.pvariance(c)
