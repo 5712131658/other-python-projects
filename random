@@ -6051,3 +6051,11 @@ data = [10, 20, 30, 40, 50]
 std_dev = statistics.pstdev(data)  # sample standard deviation
 print("Standard Deviation:", std_dev)
 statistics.stdev(c),statistics.pstdev(c),statistics.variance(c),statistics.pvariance(c)
+number_plate =input("Enter vehicle number to be validated: ") 
+digit2 = ord(number_plate[1].upper())-ord('A')+1
+digit3 = ord(number_plate[2].upper())-ord('A')+1
+ckSum = digit2*9 + digit3*4 + int(number_plate[3])*5 + int(number_plate[4])*4 + int(number_plate[5])*3 + int(number_plate[6])*2      
+rem = ckSum % 19           
+refString = "AZYXUTSRPMLKJHGEDCB"  
+if number_plate[7].upper()==refString[rem]: print("Validity of the vehicle number: Valid") 
+else: print("Validity of the vehicle number: Invalid") 
