@@ -1,0 +1,67 @@
+import fitz  # PyMuPDF
+# Open the PDF file
+doc = fitz.open("example.pdf")
+# Extract text from each page
+for page_num in range(len(doc)):
+    page = doc.load_page(page_num)
+    text = page.get_text()
+    print(f"--- Page {page_num + 1} ---")
+    print(text)
+doc.close()
+import PyPDF2
+with open("example.pdf", "rb") as file:
+    reader = PyPDF2.PdfReader(file)
+    for i, page in enumerate(reader.pages):
+        text = page.extract_text()
+        print(f"--- Page {i + 1} ---")
+        print(text)
+import pdfplumber
+with pdfplumber.open("example.pdf") as pdf:
+    for i, page in enumerate(pdf.pages):
+        text = page.extract_text()
+        print(f"--- Page {i + 1} ---")
+        print(text)
+import pandas
+# Load an Excel file
+df = pandas.read_excel("example.xlsx", engine='openpyxl')
+# Show the data
+print(df)
+df = pandas.read_excel("example.xlsx", sheet_name="Sheet1")
+sheets = pandas.read_excel("example.xlsx", sheet_name=None)  # Returns a dict of DataFrames
+from openpyxl import load_workbook
+wb = load_workbook("example.xlsx")
+sheet = wb.active  # Or wb["Sheet1"]
+for row in sheet.iter_rows(values_only=True):
+    print(row)
+from docx import Document
+# Load the Word document
+doc = Document("example.docx")
+# Extract and print all paragraphs
+for para in doc.paragraphs:
+    print(para.text)
+for table in doc.tables:
+    for row in table.rows:
+        for cell in row.cells:
+            print(cell.text, end=" | ")
+        print()
+from pptx import Presentation
+# Load the PowerPoint file
+prs = Presentation("example.pptx")
+# Loop through slides and extract text
+for i, slide in enumerate(prs.slides):
+    print(f"--- Slide {i + 1} ---")
+    for shape in slide.shapes:
+        if hasattr(shape, "text"):
+            print(shape.text)
+from pptx.enum.shapes import MSO_SHAPE_TYPE
+for shape in slide.shapes:
+    if shape.shape_type == MSO_SHAPE_TYPE.TABLE:
+        table = shape.table
+        for row in table.rows:
+            for cell in row.cells:
+                print(cell.text, end=" | ")
+            print()
+for slide in prs.slides:
+    title_shapes = [shape for shape in slide.shapes if shape.name == "Title 1"]
+    for shape in title_shapes:
+        print("Slide title:", shape.text)
